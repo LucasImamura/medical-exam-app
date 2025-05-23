@@ -21,6 +21,10 @@ AppDataSource.initialize()
     const scheduleController = new ScheduleController();
     const examController = new ExamController();
 
+    app.get(
+      "/api/schedules",
+      scheduleController.getAll.bind(scheduleController)
+    );
     app.post(
       "/api/schedules",
       scheduleController.create.bind(scheduleController)

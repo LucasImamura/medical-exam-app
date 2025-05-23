@@ -8,6 +8,11 @@ export class ScheduleService {
 
   private readonly SLOT_DURATION = 60 * 60 * 1000;
 
+  async getAllSchedules(): Promise<Schedule[]> {
+    console.log("Fetching all schedules");
+    return this.scheduleRepository.find({ relations: ["exam"] });
+  }
+
   async createSchedule(
     scheduleData: Partial<Schedule>,
     examId: number

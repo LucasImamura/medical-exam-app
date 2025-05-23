@@ -20,4 +20,13 @@ export class ScheduleController {
       res.status(400).json({ error: error.message });
     }
   }
+
+  async getAll(req: Request, res: Response) {
+    try {
+      const schedules = await this.scheduleService.getAllSchedules();
+      res.json(schedules);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
