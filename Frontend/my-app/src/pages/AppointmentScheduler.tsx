@@ -16,6 +16,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
 }) => {
   const [selectedSlots, setSelectedSlots] = useState<Date[]>([]);
   const [takenSlots, setTakenSlots] = useState<Date[]>([]); // Store taken slots
+  const [observation, setObservation] = useState<string>(""); // Observation field
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,11 +62,13 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
         await axiosInstance.post("/api/schedules", {
           examId,
           time: slot.toISOString(),
+          observations: observation, // Include the observation in the request
         });
       }
 
       alert("Appointment(s) scheduled successfully!");
       setSelectedSlots([]);
+      setObservation(""); // Clear the observation field
     } catch (err) {
       setError(err.response?.data?.error || "Failed to schedule appointment");
     } finally {
@@ -110,6 +113,16 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
               />
             );
           }}
+        />
+      </div>
+
+      <div className="observation-container">
+        <label htmlFor="observation">Observation:</label>
+        <textarea
+          id="observation"
+          value={observation}
+          onChange={(e) => setObservation(e.target.value)}
+          placeholder="Add any additional details here..."
         />
       </div>
 

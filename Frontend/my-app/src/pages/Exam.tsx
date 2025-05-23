@@ -27,7 +27,7 @@ function Exam(): React.JSX.Element {
 
   return (
     <div className="exam-container">
-      <h1>Please, Select the exam you would like to schedule</h1>
+      <h1>Please, select the exam you would like to schedule</h1>
       {error && <p className="error-message">{error}</p>}
       <ul>
         {exams.map((exam) => (
