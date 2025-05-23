@@ -29,4 +29,14 @@ export class ScheduleController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async getByExam(req: Request, res: Response) {
+    try {
+      const examId = parseInt(req.params.examId);
+      const schedules = await this.scheduleService.getSchedulesByExam(examId);
+      res.json(schedules);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }

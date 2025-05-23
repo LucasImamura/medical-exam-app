@@ -6,12 +6,24 @@
   min-height: 100vh;
   text-align: center;
   padding: 20px;
+  width: 100%;
+
+  background-image: url("../assets/blur-hospital.jpg"); /* Replace with the actual path to your image */
+  background-size: cover; /* Ensure the image covers the entire container */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  color: white; /* Adjust text color for better contrast */
 }
 
 h1 {
   margin-bottom: 20px;
   font-size: 2rem;
-  color: #3f51b5;
+  color: #000;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #000;
 }
 
 .user-type-buttons,
@@ -21,7 +33,7 @@ h1 {
 }
 
 button {
-  background-color: #3f51b5;
+  background-color: #091859;
   color: white;
   padding: 15px 30px;
   border: none;
@@ -32,5 +44,5 @@ button {
 }
 
 button:hover {
-  background-color: #303f9f;
+  background-color: #132fad;
 }

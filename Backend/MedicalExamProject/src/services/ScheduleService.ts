@@ -62,4 +62,10 @@ export class ScheduleService {
       .setParameters({ startTime, endTime })
       .getMany();
   }
+
+  async getSchedulesByExam(examId: number): Promise<Schedule[]> {
+    return this.scheduleRepository.find({
+      where: { exam: { id: examId } },
+    });
+  }
 }

@@ -31,6 +31,10 @@ AppDataSource.initialize()
     );
     app.get("/api/exams", examController.getAll.bind(examController));
     app.post("/api/exams", examController.create.bind(examController));
+    app.get(
+      "/api/schedules/exam/:examId",
+      scheduleController.getByExam.bind(scheduleController)
+    );
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

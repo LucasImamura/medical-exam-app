@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ScheduleSelector from "react-schedule-selector";
 import axiosInstance from "../config/axiosInstance";
 import "./AppointmentScheduler.css";
@@ -7,15 +7,43 @@ interface AppointmentSchedulerProps {
   examId: number;
 }
 
+interface Schedule {
+  time: string; // ISO string of the scheduled time
+}
+
 const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   examId,
 }) => {
   const [selectedSlots, setSelectedSlots] = useState<Date[]>([]);
+  const [takenSlots, setTakenSlots] = useState<Date[]>([]); // Store taken slots
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    const fetchTakenSlots = async () => {
+      try {
+        const response = await axiosInstance.get<Schedule[]>(
+          `/api/schedules/exam/${examId}`
+        );
+        const takenTimes = response.data.map(
+          (schedule) => new Date(schedule.time)
+        );
+        setTakenSlots(takenTimes);
+      } catch (err) {
+        setError("Failed to fetch taken slots. Please try again later.");
+      }
+    };
+
+    fetchTakenSlots();
+  }, [examId]);
+
   const handleChange = (newSlots: Date[]) => {
-    setSelectedSlots(newSlots);
+    if (newSlots.length > 1) {
+      // Keep only the most recently selected slot
+      setSelectedSlots([newSlots[newSlots.length - 1]]);
+    } else {
+      setSelectedSlots(newSlots);
+    }
     setError(null);
   };
 
@@ -29,7 +57,6 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     setError(null);
 
     try {
-      // For multiple selections (if needed)
       for (const slot of selectedSlots) {
         await axiosInstance.post("/api/schedules", {
           examId,
@@ -48,7 +75,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
 
   return (
     <div className="scheduler-container">
-      <h2>Select Available Time Slots</h2>
+      <h2>Select your time slot of preference</h2>
       <div className="schedule-selector-wrapper">
         <ScheduleSelector
           selection={selectedSlots}
@@ -59,6 +86,30 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
           timeFormat="h:mma"
           onChange={handleChange}
           selectedColor="#3f51b5"
+          unselectedColor="#ffffff"
+          hoveredColor="#e0e0e0"
+          renderDateCell={(datetime, selected, refSetter) => {
+            const isTaken = takenSlots.some(
+              (takenSlot) => takenSlot.getTime() === datetime.getTime()
+            );
+            return (
+              <div
+                ref={(instance) => {
+                  if (instance) refSetter(instance);
+                }}
+                style={{
+                  backgroundColor: isTaken
+                    ? "#ffcccc"
+                    : selected
+                    ? "#3f51b5"
+                    : "#ffffff",
+                  border: "1px solid #ddd",
+                  height: "100%",
+                  width: "100%",
+                }}
+              />
+            );
+          }}
         />
       </div>
 

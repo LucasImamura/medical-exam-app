@@ -27,7 +27,7 @@ function Home(): React.JSX.Element {
       {!userType && (
         <div className="home-container">
           <h1>Welcome to Medical Exam Scheduler!</h1>
-          <h2>Please, inform what is your user type</h2>
+          <h2>Please, inform what is your user type:</h2>
           <div className="user-type-buttons">
             <button onClick={handlePatientClick}>Patient</button>
             <button onClick={handleAdminClick}>Admin</button>
