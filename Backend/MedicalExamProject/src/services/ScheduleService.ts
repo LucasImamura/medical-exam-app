@@ -1,20 +1,29 @@
-import { AppDataSource } from "../data-source"; // Import the DataSource
+import { AppDataSource } from "../data-source";
 import { Schedule } from "../entities/Schedule";
+import { Exam } from "../entities/Exam";
 
 export class ScheduleService {
   private scheduleRepository = AppDataSource.getRepository(Schedule);
+  private examRepository = AppDataSource.getRepository(Exam);
 
-  // Duration in milliseconds (1 hour)
   private readonly SLOT_DURATION = 60 * 60 * 1000;
 
-  async createSchedule(scheduleData: Partial<Schedule>): Promise<Schedule> {
+  async createSchedule(
+    scheduleData: Partial<Schedule>,
+    examId: number
+  ): Promise<Schedule> {
+    const exam = await this.examRepository.findOneBy({ id: examId });
+    if (!exam) {
+      throw new Error("Exam not found");
+    }
+
     // Calculate time range
     const startTime = new Date(scheduleData.time);
     const endTime = new Date(startTime.getTime() + this.SLOT_DURATION);
 
     // Check for conflicts
     const conflictingSchedules = await this.findConflictingSchedules(
-      scheduleData.exam.id,
+      examId,
       startTime,
       endTime
     );
@@ -25,7 +34,11 @@ export class ScheduleService {
       );
     }
 
-    const schedule = this.scheduleRepository.create(scheduleData);
+    const schedule = this.scheduleRepository.create({
+      ...scheduleData,
+      exam,
+    });
+
     return this.scheduleRepository.save(schedule);
   }
 
@@ -38,12 +51,10 @@ export class ScheduleService {
       .createQueryBuilder("schedule")
       .where("schedule.examId = :examId", { examId })
       .andWhere(
-        `(schedule.time BETWEEN :startTime AND DATE_SUB(:endTime, INTERVAL 1 SECOND)
-         OR DATE_ADD(schedule.time, INTERVAL ${
-           this.SLOT_DURATION / 1000
-         } SECOND) BETWEEN :startTime AND :endTime)`,
+        "(schedule.time BETWEEN :startTime AND :endTime OR :startTime BETWEEN schedule.time AND schedule.time + INTERVAL '1 hour')",
         { startTime, endTime }
       )
+      .setParameters({ startTime, endTime })
       .getMany();
   }
 }

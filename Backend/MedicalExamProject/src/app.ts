@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source"; // Import the DataSource
@@ -7,7 +8,8 @@ import { ExamController } from "./controllers/ExamController";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+app.use(cors({ origin: "http://localhost:5173" })); // Replace with your frontend's URL
+
 app.use(bodyParser.json());
 
 // Database connection

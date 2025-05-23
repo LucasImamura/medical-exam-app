@@ -6,12 +6,14 @@ export class ScheduleController {
 
   async create(req: Request, res: Response) {
     try {
-      const { examId, examName, examSpecialty, time } = req.body;
+      const { examId, time } = req.body;
 
-      const schedule = await this.scheduleService.createSchedule({
-        exam: { id: examId },
-        time: new Date(time),
-      });
+      const schedule = await this.scheduleService.createSchedule(
+        {
+          time: new Date(time),
+        },
+        examId
+      );
 
       res.status(201).json(schedule);
     } catch (error) {

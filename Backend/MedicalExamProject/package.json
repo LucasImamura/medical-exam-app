@@ -9,9 +9,10 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "pg": "^8.14.1",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "0.3.24",
-    "pg": "^8.14.1"
+    "typeorm": "0.3.24"
   },
   "scripts": {
     "start": "ts-node src/app.ts",
