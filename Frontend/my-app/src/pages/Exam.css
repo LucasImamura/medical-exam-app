@@ -1,0 +1,25 @@
+.exam-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+}
+
+a {
+  text-decoration: none;
+  color: #3f51b5;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
