@@ -81,4 +81,12 @@ export class ScheduleService {
       where: { exam: { id: examId } },
     });
   }
+
+  async deleteSchedule(id: number): Promise<void> {
+    const schedule = await this.scheduleRepository.findOneBy({ id });
+    if (!schedule) {
+      throw new Error("Schedule not found");
+    }
+    await this.scheduleRepository.remove(schedule);
+  }
 }

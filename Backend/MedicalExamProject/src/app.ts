@@ -35,6 +35,10 @@ AppDataSource.initialize()
       "/api/schedules/exam/:examId",
       scheduleController.getByExam.bind(scheduleController)
     );
+    app.delete(
+      "/api/schedules/:id",
+      scheduleController.delete.bind(scheduleController)
+    );
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

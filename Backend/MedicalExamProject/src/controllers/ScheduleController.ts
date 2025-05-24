@@ -40,4 +40,14 @@ export class ScheduleController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async delete(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id);
+      await this.scheduleService.deleteSchedule(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
