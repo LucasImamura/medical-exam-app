@@ -6,11 +6,12 @@ export class ScheduleController {
 
   async create(req: Request, res: Response) {
     try {
-      const { examId, time } = req.body;
+      const { examId, observations, time } = req.body;
 
       const schedule = await this.scheduleService.createSchedule(
         {
           time: new Date(time),
+          observations: observations,
         },
         examId
       );

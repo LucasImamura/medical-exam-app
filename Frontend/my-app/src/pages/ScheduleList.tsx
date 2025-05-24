@@ -30,7 +30,7 @@ function ScheduleList(): React.JSX.Element {
 
   return (
     <div className="schedule-list-container">
-      <h1>My scheduled exams</h1>
+      <h1>My Scheduled Exams</h1>
       {error && <p className="error-message">{error}</p>}
       <table>
         <thead>

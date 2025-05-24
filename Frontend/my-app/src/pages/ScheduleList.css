@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 20px;
   text-align: center;
+  margin-top: 5vh;
 }
 
 table {
@@ -15,6 +16,7 @@ th,
 td {
   border: 1px solid #ddd;
   padding: 8px;
+  color: black;
 }
 
 th {

@@ -8,11 +8,19 @@
   padding: 20px;
   width: 100%;
 
-  background-image: url("../assets/blur-hospital.jpg"); /* Replace with the actual path to your image */
-  background-size: cover; /* Ensure the image covers the entire container */
-  background-position: center; /* Center the image */
-  background-repeat: no-repeat; /* Prevent the image from repeating */
-  color: white; /* Adjust text color for better contrast */
+  background-image: url("../assets/blur-hospital.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+}
+
+.presentation-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: -10vh;
 }
 
 h1 {

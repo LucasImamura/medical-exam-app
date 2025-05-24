@@ -6,7 +6,7 @@ export class ScheduleService {
   private scheduleRepository = AppDataSource.getRepository(Schedule);
   private examRepository = AppDataSource.getRepository(Exam);
 
-  private readonly SLOT_DURATION = 60 * 60 * 1000;
+  private readonly SLOT_DURATION = 60 * 60 * 1000 - 1;
 
   async getAllSchedules(): Promise<Schedule[]> {
     console.log("Fetching all schedules");
@@ -26,6 +26,10 @@ export class ScheduleService {
     const startTime = new Date(scheduleData.time);
     const endTime = new Date(startTime.getTime() + this.SLOT_DURATION);
 
+    console.log("startTime", startTime);
+    console.log("endTime", endTime);
+    console.log("examId", examId);
+
     // Check for conflicts
     const conflictingSchedules = await this.findConflictingSchedules(
       examId,
@@ -38,6 +42,8 @@ export class ScheduleService {
         "There is already a schedule for this exam during the requested time"
       );
     }
+
+    console.log("scheduleData", scheduleData);
 
     const schedule = this.scheduleRepository.create({
       ...scheduleData,
@@ -56,10 +62,17 @@ export class ScheduleService {
       .createQueryBuilder("schedule")
       .where("schedule.examId = :examId", { examId })
       .andWhere(
-        "(schedule.time BETWEEN :startTime AND :endTime OR :startTime BETWEEN schedule.time AND schedule.time + INTERVAL '1 hour')",
-        { startTime, endTime }
+        `(
+          (schedule.time >= :startTime AND schedule.time < :endTime) OR
+          (schedule.time + :slotDuration > :startTime AND schedule.time <= :startTime) OR
+          (schedule.time <= :startTime AND schedule.time + :slotDuration >= :endTime)
+        )`,
+        {
+          startTime,
+          endTime,
+          slotDuration: this.SLOT_DURATION,
+        }
       )
-      .setParameters({ startTime, endTime })
       .getMany();
   }
 

@@ -25,7 +25,7 @@ function Home(): React.JSX.Element {
   return (
     <div className="home-container">
       {!userType && (
-        <div className="home-container">
+        <div className="presentation-container">
           <h1>Welcome to Medical Exam Scheduler!</h1>
           <h2>Please, inform what is your user type:</h2>
           <div className="user-type-buttons">
@@ -35,7 +35,7 @@ function Home(): React.JSX.Element {
         </div>
       )}
       {userType === "patient" && (
-        <div className="home-container">
+        <div className="presentation-container">
           <h1>Welcome to Medical Exam Scheduler!</h1>
           <h2>What would you like to do next?</h2>
           <div className="patient-options">

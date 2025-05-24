@@ -14,7 +14,7 @@ interface Schedule {
 const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   examId,
 }) => {
-  const [selectedSlots, setSelectedSlots] = useState<Date[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<Date | null>(null); // Single selected slot
   const [takenSlots, setTakenSlots] = useState<Date[]>([]); // Store taken slots
   const [observation, setObservation] = useState<string>(""); // Observation field
   const [error, setError] = useState<string | null>(null);
@@ -39,18 +39,33 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   }, [examId]);
 
   const handleChange = (newSlots: Date[]) => {
-    if (newSlots.length > 1) {
-      // Keep only the most recently selected slot
-      setSelectedSlots([newSlots[newSlots.length - 1]]);
-    } else {
-      setSelectedSlots(newSlots);
+    if (newSlots.length === 0) {
+      setSelectedSlot(null);
+      setError(null);
+      return;
     }
+
+    const newSlot = newSlots[newSlots.length - 1]; // Get the most recently selected slot
+
+    // Check if the slot is already taken
+    const isTaken = takenSlots.some(
+      (takenSlot) => takenSlot.getTime() === newSlot.getTime()
+    );
+
+    if (isTaken) {
+      setError(
+        "There is already a schedule for this exam during the requested time"
+      );
+      return;
+    }
+
+    setSelectedSlot(newSlot);
     setError(null);
   };
 
   const handleSubmit = async () => {
-    if (selectedSlots.length === 0) {
-      setError("Please select at least one time slot");
+    if (!selectedSlot) {
+      setError("Please select a time slot");
       return;
     }
 
@@ -58,16 +73,14 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     setError(null);
 
     try {
-      for (const slot of selectedSlots) {
-        await axiosInstance.post("/api/schedules", {
-          examId,
-          time: slot.toISOString(),
-          observations: observation, // Include the observation in the request
-        });
-      }
+      await axiosInstance.post("/api/schedules", {
+        examId,
+        time: selectedSlot.toISOString(),
+        observations: observation, // Include the observation in the request
+      });
 
-      alert("Appointment(s) scheduled successfully!");
-      setSelectedSlots([]);
+      alert("Appointment scheduled successfully!");
+      setSelectedSlot(null);
       setObservation(""); // Clear the observation field
     } catch (err) {
       setError(err.response?.data?.error || "Failed to schedule appointment");
@@ -81,7 +94,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       <h2>Select your time slot of preference</h2>
       <div className="schedule-selector-wrapper">
         <ScheduleSelector
-          selection={selectedSlots}
+          selection={selectedSlot ? [selectedSlot] : []} // Pass the single selected slot as an array
           numDays={7}
           minTime={8}
           maxTime={18}
@@ -95,6 +108,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
             const isTaken = takenSlots.some(
               (takenSlot) => takenSlot.getTime() === datetime.getTime()
             );
+
             return (
               <div
                 ref={(instance) => {
@@ -117,7 +131,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       </div>
 
       <div className="observation-container">
-        <label htmlFor="observation">Observation:</label>
+        <label htmlFor="observation">Observations:</label>
         <textarea
           id="observation"
           value={observation}
@@ -128,10 +142,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
 
       {error && <div className="error-message">{error}</div>}
 
-      <button
-        onClick={handleSubmit}
-        disabled={isSubmitting || selectedSlots.length === 0}
-      >
+      <button onClick={handleSubmit} disabled={isSubmitting || !selectedSlot}>
         {isSubmitting ? "Scheduling..." : "Schedule Appointment"}
       </button>
     </div>

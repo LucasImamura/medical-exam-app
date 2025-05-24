@@ -6,6 +6,7 @@ import "./Exam.css";
 interface Exam {
   id: number;
   name: string;
+  specialty: string;
 }
 
 function Exam(): React.JSX.Element {
@@ -27,15 +28,26 @@ function Exam(): React.JSX.Element {
 
   return (
     <div className="exam-container">
-      <h1>Please, select the exam you would like to schedule</h1>
+      <h1>Available Exams</h1>
       {error && <p className="error-message">{error}</p>}
-      <ul>
-        {exams.map((exam) => (
-          <li key={exam.id}>
-            <Link to={`/appointmentscheduler/${exam.id}`}>{exam.name}</Link>
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Exam Name</th>
+            <th>Specialty</th>
+          </tr>
+        </thead>
+        <tbody>
+          {exams.map((exam) => (
+            <tr key={exam.id}>
+              <td>
+                <Link to={`/appointmentscheduler/${exam.id}`}>{exam.name}</Link>
+              </td>
+              <td>{exam.specialty}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
