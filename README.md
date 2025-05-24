@@ -2,6 +2,9 @@
 
 This project is a Medical Exam Scheduling application built with a React frontend and a Node.js backend using TypeORM and PostgreSQL.
 
+![image](https://github.com/user-attachments/assets/e9b66f78-65c3-40a2-b6cf-cd32414fb54d)
+
+
 ## Prerequisites
 
 Before running the project locally, ensure you have the following installed:
